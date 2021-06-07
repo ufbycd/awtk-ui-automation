@@ -59,6 +59,42 @@
 #define STR_WM "wm"
 #define STR_CURRENT_WINDOW "current_window"
 
+/**
+ * Enum of  error codes.
+ * @enum {number}
+ */
+enum error_code {
+  SUCCESS = 0,
+  NO_SUCH_ELEMENT = 7,
+  NO_SUCH_FRAME = 8,
+  UNKNOWN_COMMAND = 9,
+  UNSUPPORTED_OPERATION = 9,
+  STALE_ELEMENT_REFERENCE = 10,
+  ELEMENT_NOT_VISIBLE = 11,
+  INVALID_ELEMENT_STATE = 12,
+  UNKNOWN_ERROR = 13,
+  ELEMENT_NOT_SELECTABLE = 15,
+  JAVASCRIPT_ERROR = 17,
+  XPATH_LOOKUP_ERROR = 19,
+  TIMEOUT = 21,
+  NO_SUCH_WINDOW = 23,
+  INVALID_COOKIE_DOMAIN = 24,
+  UNABLE_TO_SET_COOKIE = 25,
+  UNEXPECTED_ALERT_OPEN = 26,
+  NO_SUCH_ALERT = 27,
+  SCRIPT_TIMEOUT = 28,
+  INVALID_ELEMENT_COORDINATES = 29,
+  IME_NOT_AVAILABLE = 30,
+  IME_ENGINE_ACTIVATION_FAILED = 31,
+  INVALID_SELECTOR_ERROR = 32,
+  SESSION_NOT_CREATED = 33,
+  MOVE_TARGET_OUT_OF_BOUNDS = 34,
+  SQL_DATABASE_ERROR = 35,
+  INVALID_XPATH_SELECTOR = 51,
+  INVALID_XPATH_SELECTOR_RETURN_TYPE = 52,
+  METHOD_NOT_ALLOWED = 405
+};
+
 static widget_t* automation_agent_find_element(const char* name) {
   widget_t* wm = window_manager();
   const char* widget_name = strchr(name, '.');
@@ -101,7 +137,7 @@ static widget_t* automation_agent_find_window(const char* name) {
 
 static ret_t automation_agent_on_status(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -109,7 +145,7 @@ static ret_t automation_agent_on_status(http_connection_t* c) {
 static ret_t automation_agent_on_new_session(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_str(resp, "value.sessionId", "8888");
   conf_doc_set_str(resp, "value.capabilities.platformName", "awtk");
 
@@ -119,7 +155,7 @@ static ret_t automation_agent_on_new_session(http_connection_t* c) {
 static ret_t automation_agent_on_set_url(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -141,7 +177,7 @@ static ret_t automation_agent_on_get_source(http_connection_t* c) {
   view->children->size = 0;
   widget_destroy(view);
   log_debug("source:%s\n", str.str);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_str(resp, STR_VALUE, str.str);
   str_reset(&str);
 
@@ -151,7 +187,7 @@ static ret_t automation_agent_on_get_source(http_connection_t* c) {
 static ret_t automation_agent_on_get_contexts(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_str(resp, "value.[0]", "NATIVE_APP");
 
   return RET_OK;
@@ -160,7 +196,7 @@ static ret_t automation_agent_on_get_contexts(http_connection_t* c) {
 static ret_t automation_agent_on_set_context(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -168,7 +204,7 @@ static ret_t automation_agent_on_set_context(http_connection_t* c) {
 static ret_t automation_agent_on_get_context(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_str(resp, "value", "NATIVE_APP");
 
   return RET_OK;
@@ -204,7 +240,7 @@ static ret_t automation_agent_on_get_screenshot(http_connection_t* c) {
   bitmap_destroy(t);
   return_value_if_fail(png_data != NULL, RET_BAD_PARAMS);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   result = TKMEM_ALLOC(BASE64_ENCODE_OUT_SIZE(len));
   base64_encode(png_data, len, result);
   conf_doc_set_str(resp, STR_VALUE, result);
@@ -217,7 +253,7 @@ static ret_t automation_agent_on_get_screenshot(http_connection_t* c) {
 static ret_t automation_agent_on_get_session(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_str(resp, "value.platform", "awtk");
   conf_doc_set_str(resp, "value.version", "1.0");
   conf_doc_set_str(resp, "value.browserName", "chrome");
@@ -230,7 +266,7 @@ static ret_t automation_agent_on_get_session(http_connection_t* c) {
 static ret_t automation_agent_on_remove_session(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   tk_quit();
 
   return RET_OK;
@@ -239,7 +275,7 @@ static ret_t automation_agent_on_remove_session(http_connection_t* c) {
 static ret_t automation_agent_on_get_timeouts(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_int(resp, "value.script", 30000);
   conf_doc_set_int(resp, "value.pageLoad", 30000);
   conf_doc_set_int(resp, "value.implicit", 30000);
@@ -255,7 +291,7 @@ static ret_t automation_agent_on_set_timeouts(http_connection_t* c) {
 
   /*TODO*/
   log_debug("set_timeout: type=%s ms=%d\n", type, ms);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -269,7 +305,7 @@ static ret_t automation_agent_on_back(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
 
   idle_add(idle_back, NULL);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -279,7 +315,7 @@ static ret_t automation_agent_on_get_title(http_connection_t* c) {
   widget_t* wm = window_manager();
   widget_t* element = window_manager_get_top_window(wm);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   if (element->text.size > 0) {
     str_t str;
@@ -300,7 +336,7 @@ static ret_t automation_agent_on_get_window_name(http_connection_t* c) {
   widget_t* element = window_manager_get_top_window(wm);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_str(resp, STR_VALUE, element->name);
 
   return RET_OK;
@@ -313,7 +349,7 @@ static ret_t automation_agent_on_get_windows_name(http_connection_t* c) {
   widget_t* wm = window_manager();
   uint32_t nr = widget_count_children(wm);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   for (i = 0; i < nr; i++) {
     widget_t* iter = widget_get_child(wm, i);
     tk_snprintf(path, sizeof(path), "value.[%u]", i);
@@ -329,7 +365,7 @@ static ret_t automation_agent_on_get_window_rect(http_connection_t* c) {
   widget_t* element = automation_agent_find_window(name);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_int(resp, "value.x", element->x);
   conf_doc_set_int(resp, "value.y", element->y);
   conf_doc_set_int(resp, "value.width", element->w);
@@ -344,7 +380,7 @@ static ret_t automation_agent_on_get_window_position(http_connection_t* c) {
   widget_t* element = automation_agent_find_window(name);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_int(resp, "value.x", element->x);
   conf_doc_set_int(resp, "value.y", element->y);
 
@@ -357,7 +393,7 @@ static ret_t automation_agent_on_get_window_size(http_connection_t* c) {
   widget_t* element = automation_agent_find_window(name);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_int(resp, "value.width", element->w);
   conf_doc_set_int(resp, "value.height", element->h);
 
@@ -373,7 +409,7 @@ static ret_t automation_agent_on_set_window_position(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   widget_move(element, x, y);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -387,7 +423,7 @@ static ret_t automation_agent_on_set_window_size(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   widget_resize(element, w, h);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -399,14 +435,14 @@ static ret_t automation_agent_on_maximize_window(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   window_set_fullscreen(element, TRUE);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
 
 static ret_t automation_agent_on_not_impl(http_connection_t* c) {
   conf_doc_t* resp = c->resp;
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   log_debug("not impl:%s\n", c->url);
 
   return RET_OK;
@@ -421,7 +457,7 @@ static ret_t automation_agent_on_switch_to_window(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   widget_restack(element, widget_count_children(element->parent));
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -433,7 +469,7 @@ static ret_t automation_agent_on_close_window(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   window_close(element);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -445,8 +481,10 @@ static ret_t automation_agent_on_get_element(http_connection_t* c) {
   const char* value = conf_doc_get_str(req, STR_VALUE, NULL);
   return_value_if_fail(using != NULL && value != NULL, RET_BAD_PARAMS);
 
-  if (tk_str_ieq(using, STR_ID) || tk_str_ieq(using, STR_ACCESS_ID)) {
-    conf_doc_set_int(resp, STR_STATUS, 0);
+  if (tk_str_ieq(using, STR_ID) || tk_str_ieq(using, STR_ACCESS_ID)  || tk_str_ieq(using, STR_NAME)) {
+    widget_t* element = automation_agent_find_element(value);
+
+    conf_doc_set_int(resp, STR_STATUS, (element != NULL) ? SUCCESS : NO_SUCH_ELEMENT);
     conf_doc_set_str(resp, "value.ELEMENT", value);
   }
 
@@ -461,7 +499,7 @@ static ret_t automation_agent_on_get_elements(http_connection_t* c) {
   return_value_if_fail(using != NULL && value != NULL, RET_BAD_PARAMS);
 
   if (tk_str_ieq(using, STR_ID) || tk_str_ieq(using, STR_ACCESS_ID)) {
-    conf_doc_set_int(resp, STR_STATUS, 0);
+    conf_doc_set_int(resp, STR_STATUS, SUCCESS);
     conf_doc_set_str(resp, "value.[0].ELEMENT", value);
   }
 
@@ -478,7 +516,7 @@ static ret_t automation_agent_on_get_focus_element(http_connection_t* c) {
     element = element->target;
   }
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_str(resp, "value.ELEMENT", element->name);
 
   return RET_OK;
@@ -500,7 +538,7 @@ static ret_t automation_agent_on_click_element(http_connection_t* c) {
   widget_t* element = automation_agent_find_element(id);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
   idle_add(idle_click, element);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -551,7 +589,7 @@ static ret_t automation_agent_on_touch_perform(http_connection_t* c) {
     }
   }
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -563,7 +601,7 @@ static ret_t automation_agent_on_clear_element(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   widget_set_text_utf8(element, "");
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -577,10 +615,13 @@ static ret_t automation_agent_on_get_element_text(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   str_init(&str, 0);
-  if(widget_get_prop(element, WIDGET_PROP_TEXT, &v) == RET_OK) {
+  if (widget_get_prop(element, WIDGET_PROP_TEXT, &v) == RET_OK) {
     str_from_value(&str, &v);
+    conf_doc_set_int(resp, STR_STATUS, SUCCESS);
+  } else {
+      conf_doc_set_int(resp, STR_STATUS, UNKNOWN_ERROR);
   }
-  conf_doc_set_int(resp, STR_STATUS, 0);
+
   conf_doc_set_str(resp, STR_VALUE, str.str);
   str_reset(&str);
 
@@ -593,7 +634,7 @@ static ret_t automation_agent_on_get_element_name(http_connection_t* c) {
   widget_t* element = automation_agent_find_element(id);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_str(resp, STR_VALUE, element->name);
 
   return RET_OK;
@@ -605,7 +646,7 @@ static ret_t automation_agent_on_get_element_enable(http_connection_t* c) {
   widget_t* element = automation_agent_find_element(id);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_bool(resp, STR_VALUE, element->enable);
 
   return RET_OK;
@@ -617,7 +658,7 @@ static ret_t automation_agent_on_get_element_selected(http_connection_t* c) {
   widget_t* element = automation_agent_find_element(id);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_bool(resp, STR_VALUE, widget_get_value(element) == TRUE);
 
   return RET_OK;
@@ -629,7 +670,7 @@ static ret_t automation_agent_on_get_element_location(http_connection_t* c) {
   widget_t* element = automation_agent_find_element(id);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_int(resp, "value.x", element->x);
   conf_doc_set_int(resp, "value.y", element->y);
 
@@ -644,7 +685,7 @@ static ret_t automation_agent_on_get_element_location_in_view(http_connection_t*
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   widget_to_screen(element, &p);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_int(resp, "value.x", p.x);
   conf_doc_set_int(resp, "value.y", p.y);
 
@@ -657,7 +698,7 @@ static ret_t automation_agent_on_get_element_size(http_connection_t* c) {
   widget_t* element = automation_agent_find_element(id);
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set_int(resp, "value.width", element->w);
   conf_doc_set_int(resp, "value.height", element->h);
 
@@ -673,7 +714,7 @@ static ret_t automation_agent_on_get_element_prop(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
   return_value_if_fail(widget_get_prop(element, prop, &v) == RET_OK, RET_NOT_FOUND);
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
   conf_doc_set(resp, STR_VALUE, &v);
 
   return RET_OK;
@@ -687,7 +728,7 @@ static ret_t automation_agent_on_set_element_value(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   widget_set_prop_str(element, WIDGET_PROP_VALUE, value);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -701,7 +742,7 @@ static ret_t automation_agent_on_set_element_prop(http_connection_t* c) {
   return_value_if_fail(element != NULL, RET_NOT_FOUND);
 
   widget_set_prop_str(element, prop, value);
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }
@@ -891,7 +932,7 @@ static ret_t automation_agent_on_element_input(http_connection_t* c) {
     wstr_reset(&str);
   }
 
-  conf_doc_set_int(resp, STR_STATUS, 0);
+  conf_doc_set_int(resp, STR_STATUS, SUCCESS);
 
   return RET_OK;
 }

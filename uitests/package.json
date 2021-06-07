@@ -13,10 +13,11 @@
     "mocha": "^8.1.1",
     "q": "^1.5.1",
     "underscore": "^1.10.2",
-    "wd": "^1.12.1"
+    "wd": "^1.14.0"
   },
   "dependencies": {
-    "awtk-appium-js-helpers": "git+https://github.com/zlgopen/awtk-appium-js-helpers.git"
+    "awtk-appium-js-helpers": "git+https://github.com/zlgopen/awtk-appium-js-helpers.git",
+    "webdriverio": "^7.7.2"
   },
   "keywords": [
     "awtk",
